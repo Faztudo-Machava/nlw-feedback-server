@@ -9,21 +9,26 @@ export const routes = express.Router();
 routes.post('/feedbacks', async (req, res) => {
   const { comment, type, screenshot } = req.body;
 
-  const prismaFeedback = new primaFeedbackRepository();
+  try {
+    const prismaFeedback = new primaFeedbackRepository();
 
-  const nodemailerMailAdaptar = new NodemailerMailAdapter();
-
-  const submitFeedbackNew = new submitFeedback(
-    prismaFeedback,
-    nodemailerMailAdaptar
-  );
-
+    const nodemailerMailAdaptar = new NodemailerMailAdapter();
   
-  await submitFeedbackNew.execute({
-    type,
-    comment,
-    screenshot
-  });
-
-  return res.status(201).send();
+    const submitFeedbackNew = new submitFeedback(
+      prismaFeedback,
+      nodemailerMailAdaptar
+    );
+  
+    
+    await submitFeedbackNew.execute({
+      type,
+      comment,
+      screenshot
+    });
+  
+    return res.status(201).send();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send();
+  }
 });
